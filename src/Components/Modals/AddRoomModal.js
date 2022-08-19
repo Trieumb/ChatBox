@@ -1,18 +1,22 @@
 import React, {useContext} from 'react';
-import {Form, Modal} from 'antd';
-import Input from 'antd/lib/input/Input';
+import {Form, Modal, Input} from 'antd';
 import {AppContext} from '../Context/AppProvider';
+import {addDocument} from '../../Firebase/services';
+import {AuthContext} from '../Context/AuthProvider';
 
 const AddRoomModal = () => {
-  const [isAddRoomVisible, setIsAddRoomVisible] = useContext (AppContext);
+  const {isAddRoomVisible, setIsAddRoomVisible} = useContext (AppContext);
+  const {user: {uid}} = useContext (AuthContext);
   const [form] = Form.useForm ();
 
   const handleOk = () => {
-    console.log ({formData: form.getFieldsValue ()});
+    addDocument ('rooms', {...form.getFieldValue (), members: [uid]});
+    form.resetFields ();
     setIsAddRoomVisible (false);
   };
   const handleCancel = () => {
     setIsAddRoomVisible (false);
+    form.resetFields ();
   };
   return (
     <div>
@@ -22,7 +26,7 @@ const AddRoomModal = () => {
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <Form form={form}>
+        <Form form={form} layout="vertical">
           <Form.Item label="Tên phòng" name="name">
             <Input placeholder="Nhập tên phòng" />
           </Form.Item>

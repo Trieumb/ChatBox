@@ -7,11 +7,11 @@ export const AuthContext = createContext ();
 const AuthProvider = ({children}) => {
   const navigate = useNavigate ();
   const [user, setUser] = useState ({});
-  const [isLoading, setIsLoading] = useState (true);
+  const [isLoading, setIsLoading] = useState (false);
   useEffect (
     () => {
       const unsubscibed = auth.onAuthStateChanged (user => {
-        console.log (user);
+        // console.log (user);
         if (user) {
           const {displayName, email, uid, photoURL} = user;
           setUser ({

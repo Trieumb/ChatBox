@@ -5,8 +5,10 @@ import {AuthContext} from './AuthProvider';
 export const AppContext = createContext ();
 const AppProvider = ({children}) => {
   const {user: {uid}} = useContext (AuthContext);
-
   const [isAddRoomVisible, setIsAddRoomVisible] = useState (false);
+  const [isInviteMemberVisible, setIsInviteMemberVisible] = useState (false);
+  const [selectedRoomId, setSelectedRoomId] = useState ('');
+
   const roomCondition = useMemo (
     () => {
       return {
@@ -17,11 +19,37 @@ const AppProvider = ({children}) => {
     },
     [uid]
   );
-
   const rooms = useFirestore ('rooms', roomCondition);
-  console.log (rooms);
+
+  const selectedRoom = useMemo (
+    () => rooms.find (room => room.id === selectedRoomId) || {},
+    [rooms, selectedRoomId]
+  );
+  const usersCondition = useMemo (
+    () => {
+      return {
+        fieldName: 'uid',
+        operator: 'in',
+        compareValue: selectedRoom.members,
+      };
+    },
+    [selectedRoom.members]
+  );
+  const members = useFirestore ('user', usersCondition);
   return (
-    <AppContext.Provider value={{rooms, isAddRoomVisible, setIsAddRoomVisible}}>
+    <AppContext.Provider
+      value={{
+        rooms,
+        members,
+        isAddRoomVisible,
+        setIsAddRoomVisible,
+        selectedRoomId,
+        setSelectedRoomId,
+        selectedRoom,
+        isInviteMemberVisible,
+        setIsInviteMemberVisible,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

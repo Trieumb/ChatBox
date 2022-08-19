@@ -3,7 +3,6 @@ import {Button, Collapse, Typography} from 'antd';
 import styled from 'styled-components';
 import {PlusSquareOutlined} from '@ant-design/icons';
 import {AppContext} from '../Context/AppProvider';
-import {useNavigate} from 'react-router-dom';
 
 const {Panel} = Collapse;
 const PanelStyled = styled (Panel)`
@@ -28,20 +27,20 @@ const LinkStyled = styled (Typography.Link)`
 `;
 
 const RoomList = () => {
-  const {rooms, isAddRoomVisible, setIsAddRoomVisible} = useContext (
+  const {rooms, setIsAddRoomVisible, setSelectedRoomId} = useContext (
     AppContext
   );
-  const navigate = useNavigate ();
-
   const handleAddRoom = () => {
-    navigate ('addRoom', setIsAddRoomVisible (true));
-
-    console.log (isAddRoomVisible);
+    setIsAddRoomVisible (true);
   };
   return (
     <Collapse ghost defaultActiveKey={['1']}>
       <PanelStyled header="Danh sách các phòng" key="1">
-        {rooms.map (room => <LinkStyled key={room.id}>{room.name}</LinkStyled>)}
+        {rooms.map (room => (
+          <LinkStyled key={room.id} onClick={() => setSelectedRoomId (room.id)}>
+            {room.name}
+          </LinkStyled>
+        ))}
         <Button
           className="add-room"
           type="text"
