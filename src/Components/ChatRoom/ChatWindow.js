@@ -71,6 +71,7 @@ const ChatWindow = () => {
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   }
+// tao data messages
   const handleOnSubmit = () => {
     addDocument('messages',{
       text: inputValue,
@@ -90,7 +91,6 @@ const ChatWindow = () => {
   }),[selectedRoom.id])
 
   const messages = useFirestore('messages', condition)
-  console.log({messages});
   return (
     <WraperStyled>
      {
@@ -104,11 +104,16 @@ const ChatWindow = () => {
         </div>
         <ButtonGroupStyled>
           <Button icon={<UserAddOutlined />} type="text" onClick={() => setIsInviteMemberVisible(true)}>Mời</Button>
-          <Avatar.Group size="small" maxCount={2}>
+          <Avatar.Group size="small" maxCount={3}>
            {
-            members.map( member => <Tooltip title={member.displayName} key={member.id}>
-               <Avatar src={member.photoURL}>{member.photoURL? '' : member.displayName?.charAt(0)?.toUpperCase()}</Avatar>
-            </Tooltip>)
+            members.map((member) => (
+              <Tooltip title={member.displayName} key={member.id}>
+                <Avatar src={member.photoURL}>
+                  {member.photoURL
+                    ? ''
+                    : member.displayName?.charAt(0)?.toUpperCase()}
+                </Avatar>
+            </Tooltip>))
             
            }
           </Avatar.Group>
