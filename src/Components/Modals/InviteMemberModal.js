@@ -61,7 +61,7 @@ async function fetchUserList(search, curMembers) {
           label: doc.data().displayName,
           value: doc.data().uid,
           photoURL: doc.data().photoURL,
-        })).filter(opt => curMembers.includes(opt.value));
+        }))
     });
 }
 const InviteMemberModal = () => {
